@@ -23,7 +23,7 @@ model {
     # Model
     for (i in 1:Ntotal) {
         for (j in 1:Mtotal) {
-            mu[i, j] <- b*x[j];
+            mu[i, j] <- b[i]*x[j];
             y[i,j] ~ dnorm(mu[i,j], tau)
         }
     }
@@ -31,7 +31,10 @@ model {
     # Priors
     tau <- pow( sigma , -2 );
     sigma ~ dunif(0,10);
-    b ~ dnorm( 0.0 , 1e-12 )
+
+    for(i in 1:Ntotal){
+        b[i] ~ dnorm( 0.0 , 1e-12 )
+    }
 }
 "
 writeLines(modelstring,con="model.txt")
@@ -61,16 +64,24 @@ dataList <- list(
 
 #------------------------------------------------------------------------------
 #-- RUN THE CHAINS
-jagsModel = jags.model( "model.txt" , data=dataList, inits=list(b=0) , n.chains=1 , n.adapt=1000, quiet=T )
+jagsModel = jags.model( "model.txt" , data=dataList, 
+                        inits=list(b=rep(0,nProt)) , n.chains=1 , 
+                        n.adapt=1000, quiet=T )
 update( jagsModel , n.iter=1000, progress.bar="none" )
 codaSamples = coda.samples( jagsModel , variable.names=c("b") , 
                             n.iter=10000 , thin=1, progress.bar="none" )
 #------------------------------------------------------------------------------
-#-- DERIVE THE P- AND P-LIKE VALUES
-b = as.numeric( codaSamples[[1]][,"b"] )
-ttestProb = t.test( y[x==1], y[x==-1], var.equal=T )$p.value
-mcmcProb = min( c(2*sum(b>0)/length(b), 2*sum(b<0)/length(b))) 
-#------------------------------------------------------------------------------
+
+head(as.matrix(codaSamples))
+plot(codaSamples)
+
+# #-- DERIVE THE P- AND P-LIKE VALUES
+# b = as.numeric( codaSamples[[1]][,"b"] )
+# ttestProb = t.test( y[x==1], y[x==-1], var.equal=T )$p.value
+# mcmcProb = min( c(2*sum(b>0)/length(b), 2*sum(b<0)/length(b))) 
+# #------------------------------------------------------------------------------
+
+
 
 
 
