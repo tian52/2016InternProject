@@ -73,7 +73,10 @@ codaSamples = coda.samples( jagsModel , variable.names=c("b") ,
 #------------------------------------------------------------------------------
 
 head(as.matrix(codaSamples))
+# Plot results
 plot(codaSamples)
+
+
 
 # #-- DERIVE THE P- AND P-LIKE VALUES
 # b = as.numeric( codaSamples[[1]][,"b"] )
