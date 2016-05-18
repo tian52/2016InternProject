@@ -65,17 +65,28 @@ dataList <- list(
 #------------------------------------------------------------------------------
 #-- RUN THE CHAINS
 jagsModel = jags.model( "model.txt" , data=dataList, 
-                        inits=list(b=rep(0,nProt)) , n.chains=1 , 
-                        n.adapt=1000, quiet=T )
-update( jagsModel , n.iter=1000, progress.bar="none" )
+                        inits=list(b=rep(0,nProt)) , n.chains=2 , 
+                        n.adapt=2000, quiet=T )
+update( jagsModel , n.iter=2000, n.burnin=1000, progress.bar="none" )
 codaSamples = coda.samples( jagsModel , variable.names=c("b") , 
                             n.iter=10000 , thin=1, progress.bar="none" )
 #------------------------------------------------------------------------------
 
 head(as.matrix(codaSamples))
+
 # Plot results
 plot(codaSamples)
 
+# Autocorrelation
+autocorr(codaSamples)
+autocorr.diag(codaSamples)
+autocorr.plot(codaSamples)
+
+# mixin. Gelman-Rubin criterion
+# measures whether there is a significant difference between the variance within several chains 
+# and the variance between several chains by the potential scale reduction factors.
+gelman.diag(codaSamples)
+gelman.plot(codaSamples)
 
 
 # #-- DERIVE THE P- AND P-LIKE VALUES
