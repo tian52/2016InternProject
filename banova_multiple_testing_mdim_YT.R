@@ -34,7 +34,7 @@ nPerExp = 4
 itraq = t(replicate( nProt, rnorm( nPerExp*2 ) ))
 itraq = itraq - rowMeans(itraq)
 p.vals = apply( itraq, 1, function(x) {t.test(x[1:nPerExp], x[-(1:nPerExp)])$p.value})
-groupDefs = c( rep(-1,nPerExp), rep(+1, nPerExp) )
+groupDefs = c( rep(0,nPerExp), rep(+1, nPerExp) )
 # how do I feed this into JAGS?
 
 blist <- list()
