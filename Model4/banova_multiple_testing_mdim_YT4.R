@@ -28,14 +28,15 @@ model {
         }
     }
     for(i in 1:Ntotal){
-        sigma[i] ~ dunif(min(p[i],q[i]), max(p[i],q[i]));
+        sigma[i] ~ dunif(L[i], R[i]);
         tau[i] <- pow( sigma[i] , -2 );
     }
     # Priors
     for(i in 1:Ntotal){
         b[i] ~ dnorm( 0.0 , 1e-12 );
-        p[i] ~ dunif(0,9.99);
-        q[i] ~ dunif(0,10);
+        L[i] ~ dunif(0,10); # left
+        width[i] ~ dunif(0,10); # width of uniform dist
+        R[i] <- L[i] + width[i]
     }
 }
 "
