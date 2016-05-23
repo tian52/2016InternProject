@@ -1,0 +1,88 @@
+\documentclass[12pt]{article}
+%\usepackage{astron}
+\usepackage{apalike}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{lineno}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{pifont}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{color}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.75in}
+\setlength{\textheight}{9in}
+\setlength{\LTcapwidth}{5.5in}
+\input epsf
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+
+\title{Model 4 - Multiple proteins, two groups (one $\sigma$ for all proteins)}
+
+
+\begin{document}
+
+\begin{center}{\LARGE Model 4 - Multiple proteins, two groups (varying $\sigma$ and shrink the variance estimates)}\end{center} 
+
+\hspace{0.2in}
+
+$y_i_j \sim N(\mu_i_j, \tau_i)$ 
+\\
+
+\\
+$\mu_i_j = b_iX_i_j$
+\\
+
+\\
+$\tau_i= 1/\sigma_i^2$
+\\
+
+\\
+$\sigma_i$ \sim $Unif(p_i, p_i+w_i)$
+\\
+
+\\
+$b_i \sim N(0, 1e^{-12})$
+\\
+
+\\
+$p_i$ \sim $Unif(0, 10)$
+\\
+
+\\
+$w_i$ \sim $Unif(0, 10)$
+\\
+
+\\
+\\
+%
+\\
+%$\sigma_i$ \sim $Unif(p_i, q_i)$
+\\
+%
+\\
+%$q_i$ \sim $Unif(0, 10)$
+
+\\
+
+\\
+
+
+\end{document}
+
+
+
+
+
