@@ -28,7 +28,7 @@ writeLines(modelstring,con="model.txt")
 
 
 #-- THE DATA.
-npercell = 20 # 4 # 8 # 100
+npercell = 4 # 4 # 8 # 100
 x = c( rep(1, npercell), rep(-1, npercell))
 y = c(rnorm( npercell, 0, 1), rnorm( npercell, 1, 1))
 y = y - mean(y) # zero center to be sure that b0 == 0
