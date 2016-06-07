@@ -8,8 +8,8 @@ set.seed(7)
 #-- THE DATA.
 #-------------------------------------------------------
 # let's generate iTRAQ-like dataset
-nProt = 1000
-diffProt = 50
+nProt = 100
+diffProt = 10
 nPerExp = 4
 
 sameProt = nProt - diffProt
@@ -37,12 +37,14 @@ model {
     for(i in 1:Ntotal){
         sigma[i] ~ dunif(L[i], R[i]);
         tau[i] <- pow( sigma[i] , -2 );
-        b[i] ~ dnorm( 0.0 , T[i] );
+        b[i] ~ dnorm( 0.0 , tau4beta );
     }
     # Priors
+    sigmat ~ dgamma(1, 0.01); # mode=0.1,sd=10.0
+    tau4beta <- pow( sigmat , -2 );
+
+    # sigma of the measurement error    
     for(i in 1:Ntotal){
-        T[i] <- pow( sigmat[i] , -2 );
-        sigmat[i] ~ dgamma(1, 0.01); # mode=0.1,sd=10.0
         L[i] ~ dunif(0,10); # left
         width[i] ~ dunif(0,10); # width of uniform dist
         R[i] <- L[i] + width[i]
@@ -78,13 +80,24 @@ dataList <- list(
 #--  RUN THE CHAINS (with burn-in)
 jagsModel = jags.model( "model.txt" , data=dataList, 
                         inits=list(b=rep(0,nProt)) , n.chains=2 , 
-                        n.adapt=20000, quiet=T )
-update( jagsModel , n.iter=20000, n.burnin=10000, progress.bar="none" )
-codaSamples = coda.samples( jagsModel , variable.names=c("b") , 
-                            n.iter=10000 , thin=1, progress.bar="none" )
+                        n.adapt=200, quiet=T )
+update( jagsModel , n.iter=200, n.burnin=100, progress.bar="none" )
+codaSamples = coda.samples( jagsModel , variable.names=c("b","sigmat") , 
+                            n.iter=1000 , thin=1, progress.bar="none" )
 #------------------------------------------------------------------------------
 
 head(as.matrix(codaSamples))
+
+betas <- as.matrix(codaSamples)
+betas <- betas[,grep("^b",colnames(betas))]
+sigma.recalc <- apply(betas,1,sd)
+
+
+plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
+mean(sigma.recalc)
+mean(as.matrix(codaSamples)[,'sigmat'])
+sd(colMeans(betas[1:2000,])) # ???
+
 
 # HDI
 

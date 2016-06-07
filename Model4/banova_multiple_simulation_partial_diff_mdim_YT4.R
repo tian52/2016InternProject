@@ -156,7 +156,7 @@ simusigma <- sd(groupmeandiff)
 # #------------------------------------------------------------------------------
 
 
-
+plot(colMeans(as.matrix(codaSamples)), groupmeandiff, xlim=c(-1,+1), ylim=c(-1,+1))
 
 
 
