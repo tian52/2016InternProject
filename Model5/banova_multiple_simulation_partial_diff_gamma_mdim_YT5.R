@@ -96,8 +96,13 @@ sigma.recalc <- apply(betas,1,sd)
 plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
 mean(sigma.recalc)
 mean(as.matrix(codaSamples)[,'sigmat'])
+
 sd(colMeans(betas[1:2000,])) # ???
 
+hist(groupmeandiff)
+hist(colMeans(betas[1:2000,]))
+mean(abs(groupmeandiff)/mean(abs(colMeans(betas[1:2000,]))))
+sd(groupmeandiff)/sd(colMeans(betas[1:2000,]))
 
 # HDI
 
@@ -157,19 +162,19 @@ tTestunequal
 # #------------------------------------------------------------------------------
 
 ##Extract posterior distribution of sigma
-sigma.samples <- jags.samples(jagsModel,"sigmat",n.iter=1)
-as.numeric(sigma.samples[[1]])
-hist(sigma.samples[[1]])
+#sigma.samples <- jags.samples(jagsModel,"sigmat",n.iter=1)
+#as.numeric(sigma.samples[[1]])
+#hist(sigma.samples[[1]])
 
-b.samples <- jags.samples(jagsModel,"b",n.iter=1)
-meanb <- vector(length = 1000)
-for (i in 1:nProt) {
-as.numeric(b.samples[[i]])
-  meanb[i] = mean(b.samples[[i]])
-}
-postb <- sd(meanb)
+#b.samples <- jags.samples(jagsModel,"b",n.iter=1)
+#meanb <- vector(length = 1000)
+#for (i in 1:nProt) {
+#as.numeric(b.samples[[i]])
+#  meanb[i] = mean(b.samples[[i]])
+#}
+#postb <- sd(meanb)
 
-hist(b.samples[[1]])
+#hist(b.samples[[1]])
 
 
 ##sigma of the simulated data
@@ -181,8 +186,24 @@ for (i in 1:nProt) {
   groupmeandiff <- groupmean1 - groupmean2
 }
 simusigma <- sd(groupmeandiff)
-postsigma <- mean(sigma.samples[[1]])
-postb <- sd(b.samples[[1]])
+#postsigma <- mean(sigma.samples[[1]])
+#postb <- sd(b.samples[[1]])
 
-#plot(codaSamples)
+#colMeans(as.matrix(codaSamples))
+postsigma <- sd(colMeans(as.matrix(codaSamples)))
+
+##sigma of the simulated data
+groupmean1 <- vector(length = nProt)
+groupmean2 <- vector(length = nProt)
+for (i in 1:nProt) {
+  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
+  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
+  groupmeandiff <- (groupmean1 - groupmean2)/2
+}
+simusigma <- sd(groupmeandiff)
+
+# #------------------------------------------------------------------------------
+
+
+plot(colMeans(as.matrix(codaSamples)), groupmeandiff, xlim=c(-1,+1), ylim=c(-1,+1))
 
