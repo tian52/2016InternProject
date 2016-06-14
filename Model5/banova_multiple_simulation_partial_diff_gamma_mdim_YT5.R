@@ -97,7 +97,7 @@ plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
 mean(sigma.recalc)
 mean(as.matrix(codaSamples)[,'sigmat'])
 
-sd(colMeans(betas[1:2000,])) # ???
+sd(colMeans(betasv)) # ???
 
 hist(groupmeandiff)
 hist(colMeans(betas[1:2000,]))
@@ -196,14 +196,19 @@ postsigma <- sd(colMeans(as.matrix(codaSamples)))
 groupmean1 <- vector(length = nProt)
 groupmean2 <- vector(length = nProt)
 for (i in 1:nProt) {
-  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
-  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
-  groupmeandiff <- (groupmean1 - groupmean2)/2
+  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])
+  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])
+  groupmeandiff <- (groupmean1 - groupmean2)/8
 }
 simusigma <- sd(groupmeandiff)
 
 # #------------------------------------------------------------------------------
 
 
-plot(colMeans(as.matrix(codaSamples)), groupmeandiff, xlim=c(-1,+1), ylim=c(-1,+1))
-
+#plot the mean of sigmat (by the chain steps)
+sigmat <-as.matrix(codaSamples)[,'sigmat']
+sigmamean <- sigmat
+for (i in 1:2000) {
+  sigmamean[i] <- mean(sigmat[1:i])
+}
+plot(sigmamean)
