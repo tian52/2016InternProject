@@ -97,7 +97,7 @@ plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
 mean(sigma.recalc)
 mean(as.matrix(codaSamples)[,'sigmat'])
 
-sd(colMeans(betasv)) # ???
+#sd(colMeans(betasv)) # ???
 
 hist(groupmeandiff)
 hist(colMeans(betas[1:2000,]))

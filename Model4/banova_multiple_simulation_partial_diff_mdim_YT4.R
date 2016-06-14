@@ -76,13 +76,39 @@ dataList <- list(
 #--  RUN THE CHAINS (with burn-in)
 jagsModel = jags.model( "model.txt" , data=dataList, 
                         inits=list(b=rep(0,nProt)) , n.chains=2 , 
-                        n.adapt=20000, quiet=T )
-update( jagsModel , n.iter=20000, n.burnin=10000, progress.bar="none" )
+                        n.adapt=200, quiet=T )
+update( jagsModel , n.iter=200, n.burnin=100, progress.bar="none" )
 codaSamples = coda.samples( jagsModel , variable.names=c("b") , 
-                            n.iter=10000 , thin=1, progress.bar="none" )
+                            n.iter=1000 , thin=1, progress.bar="none" )
 #------------------------------------------------------------------------------
 
 head(as.matrix(codaSamples))
+
+##sigma of the simulated data
+groupmean1 <- vector(length = nProt)
+groupmean2 <- vector(length = nProt)
+for (i in 1:nProt) {
+  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
+  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
+  groupmeandiff <- (groupmean1 - groupmean2)/2
+}
+simusigma <- sd(groupmeandiff)
+
+betas <- as.matrix(codaSamples)
+betas <- betas[,grep("^b",colnames(betas))]
+sigma.recalc <- apply(betas,1,sd)
+mean(sigma.recalc)
+
+#plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
+mean(sigma.recalc)
+#mean(as.matrix(codaSamples)[,'sigmat'])
+
+#sd(colMeans(betasv)) # ???
+
+hist(groupmeandiff)
+hist(colMeans(betas[1:2000,]))
+mean(abs(groupmeandiff)/mean(abs(colMeans(betas[1:2000,]))))
+sd(groupmeandiff)/sd(colMeans(betas[1:2000,]))
 
 # HDI
 
@@ -143,20 +169,26 @@ tTestunequal
 #colMeans(as.matrix(codaSamples))
 postsigma <- sd(colMeans(as.matrix(codaSamples)))
 
-##sigma of the simulated data
-groupmean1 <- vector(length = nProt)
-groupmean2 <- vector(length = nProt)
-for (i in 1:nProt) {
-  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
-  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
-  groupmeandiff <- (groupmean1 - groupmean2)/2
-}
-simusigma <- sd(groupmeandiff)
+# #------------------------------------------------------------------------------
+#postsigma <- mean(sigma.samples[[1]])
+#postb <- sd(b.samples[[1]])
+
+#colMeans(as.matrix(codaSamples))
+postsigma <- sd(colMeans(as.matrix(codaSamples)))
 
 # #------------------------------------------------------------------------------
 
 
-plot(colMeans(as.matrix(codaSamples)), groupmeandiff, xlim=c(-1,+1), ylim=c(-1,+1))
+#plot the mean of sigmat (by the chain steps)
+#sigmat <-as.matrix(codaSamples)[,'sigmat']
+#sigmamean <- sigmat
+#for (i in 1:2000) {
+#  sigmamean[i] <- mean(sigmat[1:i])
+#}
+#plot(sigmamean)
+
+
+#plot(colMeans(as.matrix(codaSamples)), groupmeandiff, xlim=c(-1,+1), ylim=c(-1,+1))
 
 
 
