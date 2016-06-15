@@ -100,7 +100,7 @@ sigma.recalc <- apply(betas,1,sd)
 mean(sigma.recalc)
 
 #plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
-mean(sigma.recalc)
+hist(sigma.recalc, breaks = 50)
 #mean(as.matrix(codaSamples)[,'sigmat'])
 
 #sd(colMeans(betasv)) # ???

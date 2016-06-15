@@ -96,6 +96,7 @@ sigma.recalc <- apply(betas,1,sd)
 plot(sigma.recalc, as.matrix(codaSamples)[,'sigmat'])
 mean(sigma.recalc)
 mean(as.matrix(codaSamples)[,'sigmat'])
+hist(as.matrix(codaSamples)[,'sigmat'],breaks=50)
 
 #sd(colMeans(betasv)) # ???
 
