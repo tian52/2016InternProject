@@ -85,14 +85,18 @@ codaSamples = coda.samples( jagsModel , variable.names=c("b") ,
 head(as.matrix(codaSamples))
 
 ##sigma of the simulated data
-groupmean1 <- vector(length = nProt)
-groupmean2 <- vector(length = nProt)
-for (i in 1:nProt) {
-  groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
-  groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
-  groupmeandiff <- (groupmean1 - groupmean2)/2
-}
+# groupmean1 <- vector(length = nProt)
+# groupmean2 <- vector(length = nProt)
+# for (i in 1:nProt) {
+#   groupmean1[i] <- (itraq[i,1]+itraq[i,2]+itraq[i,3]+itraq[i,4])/4
+#   groupmean2[i] <- (itraq[i,5]+itraq[i,6]+itraq[i,7]+itraq[i,8])/4
+#   groupmeandiff <- (groupmean1 - groupmean2)/2
+# }
+# simusigma <- sd(groupmeandiff)
+groupmeandiff <- (rowMeans(itraq[,1:4]) - rowMeans(itraq[,5:8]))/2
 simusigma <- sd(groupmeandiff)
+
+
 
 betas <- as.matrix(codaSamples)
 betas <- betas[,grep("^b",colnames(betas))]
